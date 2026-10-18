@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Orbitron", "Rajdhani", system-ui, sans-serif;
+  --font-ui: "Rajdhani", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --color-nx-bg: #05030d;
+  --color-nx-cyan: #00f0ff;
+  --color-nx-amber: #ffb300;
+  --color-nx-magenta: #ff2bd6;
+  --color-nx-violet: #9d4dff;
+  --color-nx-safe: #3dffa8;
+  --color-nx-danger: #ff3355;
+}
+
+html, body, #root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #05030d;
+  color: #e8f6ff;
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}

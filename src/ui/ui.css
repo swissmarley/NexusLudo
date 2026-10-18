@@ -1,0 +1,448 @@
+/* ─────────────────────────────────────────────────────────────
+   NEXUS LUDO — UI layer primitives (glass, chamfers, glitch, scan)
+   ───────────────────────────────────────────────────────────── */
+
+.nx-root {
+  --nx-safe-t: env(safe-area-inset-top, 0px);
+  --nx-safe-r: env(safe-area-inset-right, 0px);
+  --nx-safe-b: env(safe-area-inset-bottom, 0px);
+  --nx-safe-l: env(safe-area-inset-left, 0px);
+  font-family: var(--font-ui);
+  color: #e8f6ff;
+}
+
+.nx-safe {
+  padding: calc(var(--nx-safe-t) + 10px) calc(var(--nx-safe-r) + 10px) calc(var(--nx-safe-b) + 10px)
+    calc(var(--nx-safe-l) + 10px);
+}
+@media (min-width: 900px) {
+  .nx-safe {
+    padding: calc(var(--nx-safe-t) + 18px) calc(var(--nx-safe-r) + 20px) calc(var(--nx-safe-b) + 18px)
+      calc(var(--nx-safe-l) + 20px);
+  }
+}
+
+/* Scroll containers must re-enable touch panning (body sets touch-action:none). */
+.nx-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 240, 255, 0.35) transparent;
+}
+.nx-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.nx-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.35);
+}
+
+/* ── Chamfered glass panel with 1px neon stroke + corner brackets ── */
+.nx-panel {
+  --c: 14px;
+  --stroke: rgba(0, 240, 255, 0.42);
+  --bracket: rgba(0, 240, 255, 0.95);
+  --glass-a: rgba(12, 18, 38, 0.74);
+  --glass-b: rgba(8, 5, 24, 0.62);
+  position: relative;
+  isolation: isolate;
+  clip-path: polygon(var(--c) 0, 100% 0, 100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, 0 100%, 0 var(--c));
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.022) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 80% at 0% 0%, rgba(0, 240, 255, 0.08), transparent 60%),
+    radial-gradient(120% 80% at 100% 100%, rgba(157, 77, 255, 0.1), transparent 60%),
+    linear-gradient(160deg, var(--glass-a), var(--glass-b));
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+.nx-panel::before,
+.nx-chamfer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    linear-gradient(var(--stroke), var(--stroke)) right top / calc(100% - var(--c)) 1px no-repeat,
+    linear-gradient(var(--stroke), var(--stroke)) right top / 1px calc(100% - var(--c)) no-repeat,
+    linear-gradient(var(--stroke), var(--stroke)) left bottom / calc(100% - var(--c)) 1px no-repeat,
+    linear-gradient(var(--stroke), var(--stroke)) left bottom / 1px calc(100% - var(--c)) no-repeat,
+    linear-gradient(to bottom right, transparent calc(50% - 1px), var(--stroke) 50%, transparent calc(50% + 1px)) left top /
+      var(--c) var(--c) no-repeat,
+    linear-gradient(to bottom right, transparent calc(50% - 1px), var(--stroke) 50%, transparent calc(50% + 1px)) right
+      bottom / var(--c) var(--c) no-repeat;
+}
+.nx-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    linear-gradient(var(--bracket), var(--bracket)) right top / 14px 2px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) right top / 2px 14px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) left bottom / 14px 2px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) left bottom / 2px 14px no-repeat;
+}
+.nx-panel.nx-plain::after {
+  display: none;
+}
+.nx-chamfer {
+  --c: 10px;
+  position: relative;
+  clip-path: polygon(var(--c) 0, 100% 0, 100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, 0 100%, 0 var(--c));
+}
+
+/* ── Buttons ── */
+.nx-btn {
+  --c: 10px;
+  --accent: #00f0ff;
+  --stroke: color-mix(in srgb, var(--accent) 55%, transparent);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1.1rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  color: #e8f6ff;
+  cursor: pointer;
+  clip-path: polygon(var(--c) 0, 100% 0, 100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, 0 100%, 0 var(--c));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 16%, transparent), color-mix(in srgb, var(--accent) 4%, transparent)),
+    rgba(8, 10, 26, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease,
+    filter 0.18s ease,
+    opacity 0.18s;
+  outline: none;
+  border: 0;
+  white-space: nowrap;
+  user-select: none;
+}
+.nx-btn::after {
+  /* sheen sweep */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, color-mix(in srgb, var(--accent) 35%, transparent) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.5s ease;
+  pointer-events: none;
+}
+.nx-btn:hover:not(:disabled)::after,
+.nx-btn:focus-visible::after {
+  transform: translateX(120%);
+}
+.nx-btn:hover:not(:disabled) {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 32%, transparent), color-mix(in srgb, var(--accent) 10%, transparent)),
+    rgba(8, 10, 26, 0.8);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent) 60%, transparent));
+}
+.nx-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.985);
+}
+.nx-btn:focus-visible {
+  --stroke: var(--accent);
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+.nx-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+  filter: grayscale(0.6);
+}
+.nx-btn.nx-primary {
+  color: #03040c;
+  background: linear-gradient(100deg, var(--accent), color-mix(in srgb, var(--accent) 60%, #ff2bd6));
+  background-size: 200% 100%;
+  animation: nx-grad 5s ease-in-out infinite;
+  --stroke: transparent;
+}
+.nx-btn.nx-primary:hover:not(:disabled) {
+  background: linear-gradient(100deg, color-mix(in srgb, var(--accent) 80%, white), color-mix(in srgb, var(--accent) 60%, #ff2bd6));
+  background-size: 200% 100%;
+}
+.nx-btn.nx-ghost {
+  background: rgba(8, 10, 26, 0.45);
+}
+.nx-btn.nx-sm {
+  min-height: 36px;
+  font-size: 0.66rem;
+  padding: 0 0.8rem;
+  --c: 7px;
+}
+@media (pointer: coarse) {
+  .nx-btn.nx-sm {
+    min-height: 44px;
+  }
+}
+.nx-btn.nx-icon {
+  padding: 0;
+  width: 44px;
+  min-width: 44px;
+}
+
+/* Generic focus ring for non-.nx-btn interactive elements */
+.nx-focus:focus-visible {
+  outline: 2px solid #00f0ff;
+  outline-offset: 2px;
+}
+
+/* ── Glitch / flicker typography ── */
+.nx-glitch {
+  position: relative;
+  display: inline-block;
+}
+.nx-glitch::before,
+.nx-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.nx-glitch::before {
+  color: #ff2bd6;
+  transform: translate(2px, 0);
+  mix-blend-mode: screen;
+  animation: nx-glitch-a 3.8s infinite steps(1);
+  opacity: 0.8;
+}
+.nx-glitch::after {
+  color: #00f0ff;
+  transform: translate(-2px, 0);
+  mix-blend-mode: screen;
+  animation: nx-glitch-b 3.8s infinite steps(1);
+  opacity: 0.8;
+}
+@keyframes nx-glitch-a {
+  0%, 86%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+  87% { clip-path: inset(12% 0 62% 0); transform: translate(-6px, -1px); }
+  89% { clip-path: inset(58% 0 8% 0); transform: translate(5px, 1px); }
+  91% { clip-path: inset(30% 0 44% 0); transform: translate(-3px, 0); }
+  93% { clip-path: inset(0 0 100% 0); }
+  96% { clip-path: inset(72% 0 4% 0); transform: translate(4px, 0); }
+  97% { clip-path: inset(0 0 100% 0); }
+}
+@keyframes nx-glitch-b {
+  0%, 86%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+  88% { clip-path: inset(66% 0 10% 0); transform: translate(6px, 1px); }
+  90% { clip-path: inset(8% 0 70% 0); transform: translate(-5px, 0); }
+  92% { clip-path: inset(40% 0 36% 0); transform: translate(3px, -1px); }
+  94% { clip-path: inset(0 0 100% 0); }
+  97% { clip-path: inset(20% 0 60% 0); transform: translate(-4px, 0); }
+  98% { clip-path: inset(0 0 100% 0); }
+}
+.nx-flicker {
+  animation: nx-flicker 6s infinite;
+}
+@keyframes nx-flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.55; }
+}
+.nx-neon {
+  text-shadow:
+    0 0 6px currentColor,
+    0 0 18px color-mix(in srgb, currentColor 60%, transparent),
+    0 0 42px color-mix(in srgb, currentColor 35%, transparent);
+}
+.nx-grad-text {
+  background: linear-gradient(90deg, #00f0ff, #9d4dff 45%, #ff2bd6 75%, #00f0ff);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: nx-grad 7s linear infinite;
+}
+@keyframes nx-grad {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── Overlays ── */
+.nx-scanlines {
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+}
+.nx-scanbar {
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(0, 240, 255, 0.07), transparent);
+  height: 18%;
+  animation: nx-scanbar 7s linear infinite;
+}
+@keyframes nx-scanbar {
+  0% { transform: translateY(-120%); }
+  100% { transform: translateY(650%); }
+}
+.nx-vignette {
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(2, 1, 8, 0.75) 100%);
+}
+
+/* ── Active-turn highlight ── */
+.nx-active-ring {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background: linear-gradient(90deg, transparent, var(--seat), transparent) top / 200% 2px no-repeat,
+    linear-gradient(90deg, transparent, var(--seat), transparent) bottom / 200% 2px no-repeat;
+  animation: nx-sweep 1.6s linear infinite;
+}
+@keyframes nx-sweep {
+  0% { background-position: -100% 0, 200% 100%; }
+  100% { background-position: 200% 0, -100% 100%; }
+}
+.nx-pulse-glow {
+  animation: nx-pulse-glow 1.6s ease-in-out infinite;
+}
+@keyframes nx-pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 4px color-mix(in srgb, var(--seat) 50%, transparent)); }
+  50% { filter: drop-shadow(0 0 16px var(--seat)); }
+}
+.nx-blink {
+  animation: nx-blink 1s steps(2) infinite;
+}
+@keyframes nx-blink {
+  50% { opacity: 0.25; }
+}
+.nx-dots::after {
+  content: '';
+  animation: nx-dots 1.2s steps(4) infinite;
+}
+@keyframes nx-dots {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+}
+.nx-spin-slow {
+  animation: nx-spin 14s linear infinite;
+}
+@keyframes nx-spin {
+  to { transform: rotate(360deg); }
+}
+.nx-roll-ready {
+  animation: nx-roll-ready 1.4s ease-in-out infinite;
+}
+@keyframes nx-roll-ready {
+  0%, 100% { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--seat) 60%, transparent)); }
+  50% { filter: drop-shadow(0 0 22px var(--seat)) brightness(1.12); }
+}
+.nx-shake {
+  animation: nx-shake 0.08s linear infinite;
+}
+@keyframes nx-shake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(1px, -1px); }
+  50% { transform: translate(-1px, 1px); }
+  75% { transform: translate(1px, 1px); }
+}
+
+/* Range slider */
+.nx-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 28px;
+  background: transparent;
+  cursor: pointer;
+  touch-action: pan-x;
+}
+.nx-range::-webkit-slider-runnable-track {
+  height: 4px;
+  background: linear-gradient(90deg, #00f0ff var(--fill, 50%), rgba(255, 255, 255, 0.12) var(--fill, 50%));
+}
+.nx-range::-moz-range-track {
+  height: 4px;
+  background: linear-gradient(90deg, #00f0ff var(--fill, 50%), rgba(255, 255, 255, 0.12) var(--fill, 50%));
+}
+.nx-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -7px;
+  background: #e8f6ff;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  box-shadow: 0 0 10px #00f0ff;
+}
+.nx-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 0;
+  border-radius: 0;
+  background: #e8f6ff;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.nx-range:focus-visible {
+  outline: 1px dashed #00f0ff;
+  outline-offset: 2px;
+}
+
+.nx-input {
+  user-select: text;
+  -webkit-user-select: text;
+  touch-action: manipulation;
+}
+
+/* Tooltip */
+.nx-tip {
+  position: relative;
+}
+.nx-tip > .nx-tip-body {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+  width: max-content;
+  max-width: 220px;
+  z-index: 30;
+}
+.nx-tip:hover > .nx-tip-body,
+.nx-tip:focus-within > .nx-tip-body {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Reduced effect budgets */
+.nx-low .nx-glitch::before,
+.nx-low .nx-glitch::after,
+.nx-low .nx-scanbar {
+  animation: none !important;
+  display: none;
+}
+.nx-low .nx-flicker {
+  animation: none !important;
+}
+.nx-low .nx-panel,
+.nx-low .nx-btn {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.nx-low .nx-panel {
+  --glass-a: rgba(10, 14, 30, 0.9);
+  --glass-b: rgba(8, 6, 22, 0.86);
+}
+@media (prefers-reduced-motion: reduce) {
+  .nx-root *,
+  .nx-root *::before,
+  .nx-root *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+  }
+}
